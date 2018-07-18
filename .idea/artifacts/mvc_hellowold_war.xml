@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="mvc-hellowold:war">
+    <output-path>$PROJECT_DIR$/mvc-hellowold/target</output-path>
+    <root id="archive" name="mvc-hellowold.war">
+      <element id="artifact" artifact-name="mvc-hellowold:war exploded" />
+    </root>
+  </artifact>
+</component>
