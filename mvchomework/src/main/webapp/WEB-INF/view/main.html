@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>员工管理系统</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/bootstrap.css" th:href="@{/css/bootstrap.css}" />
+    <link rel="stylesheet" type="text/css" href="../static/css/back-index.css" th:href="@{/css/back-index.css}" />
+    <script src="../static/js/jquery.js" type="text/javascript" charset="utf-8" th:src="@{/js/jquery.js}"></script>
+    <script src="../static/js/bootstrap.js" type="text/javascript" charset="utf-8" th:src="@{/js/bootstrap.js}"></script>
+    <script src="../static/js/bootstrap-paginator.js" th:src="@{/js/bootstrap-paginator.js}"></script>
+    <script src="../static/js/bootstrap-mypaginator.js" th:src="@{/js/bootstrap-mypaginator.js}"></script>
+    <script src="../static/js/address.js" th:src="@{/js/address.js}"></script>
+    <script src="../static/js/addressApplication.js" th:src="@{/js/addressApplication.js}"></script>
+    <script src="../static/js/template-web.js" charset="utf-8" th:src="@{/js/template-web.js}"></script>
+    <script type="text/javascript" charset="utf-8">
+        $(function(){
+            $("#doAddCourseType").on("click", function() {
+                $("#courseType-id-input").hide();
+                $("#courseTypeModal").modal("show");
+                $("#id").val("");
+                $("#name").val("");
+                $("#password").val("");
+                $("#telephone").val("");
+                $("#gender").val("男");
+                $("#edu").val("-1");
+                $("#email").val("");
+                $("#input_city").val("");
+                $("#input_province").val("");
+                $("#input_area").val("");
+            });
+            $(".courseType-btn").on("click", function() {
+                $("#courseTypeModal").modal("hide");
+            });
+
+            $(".courseType-modify").on("click", function() {
+                $("#courseType-id-input").show();
+                $("#courseTypeModal").modal("show");
+            });
+
+        });
+        $(() => {
+            ajaxLoadData({
+                'pageNo':1
+            });
+
+            $("#addAndModify").click(()=>{
+                $.ajax({
+                    type:"post",
+                    url:"user/addOrModifyUser",
+                    data:{
+                        "id":$("#id").val(),
+                        "name":$("#name").val(),
+                        "password":$("#password").val(),
+                        "gender":$("#gender").val(),
+                        "edu": $("#edu").val(),
+                        "telephone": $("#telephone").val(),
+                        "email":$("#email").val(),
+                        "address":$("#input_province").val()+$("#input_city").val()+$("#input_area").val()
+                    },
+                    success:()=>{
+                        ajaxLoadData({
+                            'pageNo': $("#pageNo").val()
+                        });
+                    }
+
+                })
+
+
+            })
+
+
+
+
+
+        });
+    </script>
+
+    <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        let ajaxLoadData = (params) => {
+               $.ajax({
+                   url:'/user/findAll',   //[[@{/user/findAll}]]
+                   type:"post",
+                   data:params,
+                   dataType:"json",
+                   success:(data)=>{
+                       let pageNum=data.pageNum;
+                       console.log(pageNum);
+                       let list = data.list;
+                       console.log(data);
+                       $("#uerList").html("");
+                       let d = {
+                           "userList": list
+                       };
+                       let text = template("userListTemplate", d);
+                       $("#userList").html(text);
+
+                       let totalPages = data.pages;//新数据的总页数
+
+                       if(totalPages == 0){
+                           totalPages = 1;
+                       }
+                       $(".courseType-modify").on("click", function() {
+                           $("#courseType-id-input").show();
+                           $("#courseTypeModal").modal("show");
+                       });
+
+                       $("#pageNo").val(params.pageNo);
+                       myPaginatorFun("myPages", params.pageNo, totalPages);
+
+
+                   },
+                     error:()=>{alert("错误");}
+
+               });
+        };
+        /*]]>*/
+
+        let showUser = (id) => {
+            $.ajax({
+                type:"post",
+                url:"/user/findUserById",
+                data:{
+                    "id":id
+                },
+                dataType:"json",
+                success:(result)=>{
+                    console.log(result);
+                    if(result.success){
+                        $("#id").val(result.obj.id);
+                        $("#name").val(result.obj.name);
+                        $("#gender").find("option[value='"+result.obj.gender+"']").attr("selected",true);
+                        $("#edu").find("option[value='"+result.obj.edu+"']").attr("selected",true);
+                        $("#email").val(result.obj.email);
+                        $("#telephone").val(result.obj.telephone);
+                    }
+
+                }
+            })
+        };
+        myoptions.onPageClicked = function(event, originalEvent, type, page){
+            ajaxLoadData({
+                'pageNo': page
+            });
+        };
+        let deleteUser=(id)=>{
+            $.ajax({
+                type: "post",
+                url: "/user/remove",
+                data: {
+                    "id": id
+                },
+                dataType: "json",
+                success: (result)=>{
+                    if(result.success){
+                        ajaxLoadData({
+                            'pageNo': $("#pageNo").val()
+                        });
+                    }
+                }
+            });
+        }
+    </script>
+
+</head>
+
+<body>
+
+    <div class="panel panel-default" id="departmentSet">
+        <div class="panel-heading">
+            <h3 class="panel-title" >员工信息管理 </h3>
+            <input type="hidden" name="pageNo" id="pageNo" value="" >
+        </div>
+        <div class="panel-body">
+            <input type="button" value="添加员工" class="btn btn-primary" id="doAddCourseType" />
+            <!-- courseType父类别id,没有时,移除此按钮 -->
+            <input type="hidden" name="parent_id" value=""  />
+            <br>
+            <div class="modal fade" tabindex="-1" id="courseTypeModal">
+                <!-- 窗口声明 -->
+                <div class="modal-dialog modal-lg">
+                    <!-- 内容声明 -->
+                    <div class="modal-content">
+                        <!-- 头部、主体、脚注 -->
+                        <div class="modal-header">
+                            <button class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">添加员工</h4>
+                        </div>
+                        <div class="modal-body text-center">
+                            <div class="row text-right" id="courseType-id-input" >
+                                <label for="id" class="col-sm-4 control-label">编号：</label>
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control" id="id" name="id" readonly="true" />
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row text-right">
+                                <label for="name" class="col-sm-4 control-label">姓名：</label>
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control" id="name" name="name" />
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row text-right">
+                                <label for="password" class="col-sm-4 control-label">密码：</label>
+                                <div class="col-sm-4">
+                                    <input type="password" class="form-control" id="password" name="password" />
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row text-right">
+                                <label for="gender" class="col-sm-4 control-label">性别：</label>
+                                <div class="col-sm-4">
+                                    <select name="gender" id="gender" class="form-control">
+                                        <option value="男">男</option>
+                                        <option value="女">女</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row text-right">
+                                <label for="edu" class="col-sm-4 control-label">学历：</label>
+                                <div class="col-sm-4">
+                                    <select name="edu" id="edu" class="form-control">
+                                        <option value="-1">--请选择--</option>
+                                        <option value="大专">大专</option>
+                                        <option value="本科">本科</option>
+                                        <option value="硕士">硕士</option>
+                                        <option value="博士">博士</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row text-right">
+                                <label for="telephone" class="col-sm-4 control-label">手机号：</label>
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control" id="telephone" name="telephone" maxlength="11"  />
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row text-right">
+                                <label for="email" class="col-sm-4 control-label">邮箱：</label>
+                                <div class="col-sm-4">
+                                    <input type="email" class="form-control" id="email" name="email"  />
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row text-right">
+                                <label for="input_province" class="col-sm-4 control-label">家庭住址：</label>
+                                <div class="col-sm-2" >
+                                    <select name="input_province" id="input_province" class="form-control" >
+                                        <option value="--请选择--">--请选择--</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-2">
+                                    <select name="input_city" id="input_city" class="form-control" >
+                                        <option value=""></option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-2">
+                                    <select name="input_area" id="input_area" class="form-control" >
+                                        <option value=" "></option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary courseType-btn" id="addAndModify"  >确定</button>
+                            <button class="btn btn-primary cancel" data-dismiss="modal">取消</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="show-list">
+                <table class="table table-bordered table-hover" style='text-align: center;'>
+                    <thead>
+                        <tr class="text-danger">
+                            <th class="text-center">编号</th>
+                            <th class="text-center">姓名</th>
+                            <th class="text-center">性别</th>
+                            <th class="text-center">学历</th>
+                            <th class="text-center">手机号</th>
+                            <th class="text-center">邮箱</th>
+                            <th class="text-center">家庭住址</th>
+                            <th class="text-center">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userList">
+
+                    </tbody>
+                    <script id="userListTemplate" type="text/html">
+                        {{each userList as item}}
+                        <tr>
+                            <td>{{item.id}}</td>
+                            <td><a href="javascript:;" onclick="showUser('{{item.id}}')"  th:class="courseType-modify">{{item.name}}</a></td>
+                            <td>{{item.gender}}</td>
+                            <td>{{item.edu}}</td>
+                            <td>{{item.telephone}}</td>
+                            <td>{{item.email}}</td>
+                            <td>{{item.address}}</td>
+                            <td class="text-center">
+                                <input type="button" onclick="showUser('{{item.id}}')" class="btn btn-warning btn-sm courseType-modify" value="修改" />
+                                <input type="button" onclick="deleteUser('{{item.id}}')" class="btn btn-danger btn-sm" value="删除" />
+                            </td >
+
+                        </tr>
+                        {{/each}}
+                    </script>
+                </table>
+            </div>
+
+            <!-- 分页 -->
+            <div style="text-align: center;">
+                <ul id="myPages"></ul>
+                <input id="currentPageInput" type="hidden" value="" />
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -7,10 +7,12 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="mvc-hellowold" />
+        <module name="mvchomework" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="mvc-hellowold" target="1.8" />
+      <module name="mvchomework" target="1.8" />
       <module name="spring-mvc-parent" target="1.8" />
     </bytecodeTargetLevel>
   </component>

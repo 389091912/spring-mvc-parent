@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/mvc-hellowold/mvc-hellowold.iml" filepath="$PROJECT_DIR$/mvc-hellowold/mvc-hellowold.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mvchomework/mvchomework.iml" filepath="$PROJECT_DIR$/mvchomework/mvchomework.iml" />
       <module fileurl="file://$PROJECT_DIR$/spring-mvc-parent.iml" filepath="$PROJECT_DIR$/spring-mvc-parent.iml" />
     </modules>
   </component>

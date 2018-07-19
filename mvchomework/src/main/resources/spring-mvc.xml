@@ -15,42 +15,20 @@
        http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd"
 
 >
-    <!--&lt;!&ndash;2.去配置handlerMapping  机遇实现接口&ndash;&gt;-->
-    <!--<bean class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"/>-->
 
-    <!--&lt;!&ndash;3.配置HandlerAdapter&ndash;&gt;-->
-    <!--<bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"/>-->
+    <mvc:annotation-driven />
 
-    <!--&lt;!&ndash;4 配置Handler&ndash;&gt;-->
-    <!--<bean name="/hello"  class="com.wsy.mvc.controller.HelloController"/>-->
-    <!--<bean name="/hello1"  class="com.wsy.mvc.controller.HelloAnnotactionController"/>-->
+    <context:component-scan base-package="com.wsy.mvc.controller"/>
+    <context:component-scan base-package="com.wsy.mvc.service.impl"/>
 
-    <!--&lt;!&ndash;5.配置 viewResolver&ndash;&gt;-->
-    <!--<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">-->
-        <!--<property name="prefix" value="/WEB-INF/view/"/>-->
-        <!--<property name="suffix" value=".jsp"/>-->
-        <!--<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>-->
-    <!--</bean>-->
+    <mvc:resources mapping="/js/**" location="/WEB-INF/static/js/"/>
+    <mvc:resources mapping="/css/**" location="/WEB-INF/static/css/"/>
+    <mvc:resources mapping="/images/**" location="/WEB-INF/static/images/"/>
 
+    <mvc:view-controller path="/login" view-name="login"/>
+    <mvc:view-controller path="/main" view-name="main"/>
+    <mvc:view-controller path="/hello" view-name="hello"/>
 
-    <!--
-        注解驱动
-     -->
-    <mvc:annotation-driven/>
-    <!--
-    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"/>
-
-    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"/>
-     -->
-
-
-
-    <!--jsp版本的-->
-    <!--<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">-->
-        <!--<property name="prefix" value="/WEB-INF/view/"/>-->
-        <!--<property name="suffix" value=".jsp"/>-->
-        <!--<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>-->
-    <!--</bean>-->
 
     <bean id="templateResolver" class="org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver">
         <property name="prefix" value="/WEB-INF/view/"/>
@@ -70,17 +48,6 @@
     </bean>
 
 
-    <!--
-          处理默认静态资源  缺点是tomcat
-    -->
-    <!--<mvc:default-servlet-handler/>-->
-
-    <mvc:resources mapping="/js/**" location="/WEB-INF/static/js/"/>
-    <mvc:resources mapping="/css/**" location="/WEB-INF/static/css/"/>
-    <mvc:resources mapping="/images/**" location="/WEB-INF/static/images/"/>
-    <mvc:view-controller path="/login" view-name="login"/>
-    <mvc:view-controller path="/success" view-name="success"/>
-    <mvc:view-controller path="/hello" view-name="hello"/>
 
     <mvc:annotation-driven>
         <mvc:message-converters>
