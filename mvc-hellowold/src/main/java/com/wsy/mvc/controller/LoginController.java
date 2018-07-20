@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
+import static org.codehaus.groovy.runtime.DefaultGroovyMethods.println;
+
 /**
  * Created by IntelliJ IDEA.
  * User: wsy
@@ -31,5 +33,9 @@ public class LoginController {
         }
 
     }
-
+    @RequestMapping(value = "/test11", params = { "username","id=233","password!=1234" })
+    String test11() {
+        System.out.println( "LoginController.test11" );
+        return "success";
+    }
 }

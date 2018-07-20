@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
             throw new UserExistException( "用户名已存在" );
         }
 
-        userDao.selectByExample( example );
+        userDao.updateByPrimaryKeySelective( user );
 
 
     }

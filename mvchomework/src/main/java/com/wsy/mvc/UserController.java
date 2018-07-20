@@ -1,4 +1,4 @@
-package com.wsy.mvc.controller;
+package com.wsy.mvc;
 
 import com.github.pagehelper.PageInfo;
 import com.wsy.mvc.entity.User;
